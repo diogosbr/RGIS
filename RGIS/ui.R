@@ -50,6 +50,13 @@ ui <- fluidPage(
       tags$hr(),
       
       #inserindo arquivo:
+      fileInput("file3", "Vetor", multiple = FALSE, accept = c(".shp")),
+      actionButton("plot_shape", "OK"),
+      
+      # Horizontal line ----
+      tags$hr(),
+      
+      #inserindo arquivo:
       fileInput(
         "file2",
         "Raster",
@@ -70,6 +77,7 @@ ui <- fluidPage(
       
     ),
     
+
     # Painel principal para mostrar os outputs.
     mainPanel(
       

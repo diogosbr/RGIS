@@ -53,6 +53,50 @@ server <- function(input,output, session){
     })
     
   })
+  
+  
+  #plot shape
+  observeEvent(input$plot_shape, {
+    shape <- rgdal::readOGR(input$file3$datapath)
+    
+    output$mymap <- renderLeaflet({
+      m <- leaflet(shape) %>% addTiles() %>% addScaleBar(position = "bottomleft", options = scaleBarOptions(imperial = F)) %>%
+        addPolygons(
+          stroke = T,
+          smoothFactor = 0.2,
+          fillOpacity = 0.9,
+          weight = 1,
+          fill = F,
+          opacity = 1,
+          color = "black",
+          group = "vetor"
+        ) %>%
+        addProviderTiles(providers$Esri.WorldImagery) %>%
+        addMiniMap(
+          tiles = providers$Esri.WorldStreetMap,
+          toggleDisplay = TRUE,
+          position = "bottomright"
+        ) %>%
+        addMeasure(
+          primaryLengthUnit = "meters",
+          secondaryLengthUnit = "kilometers",
+          primaryAreaUnit = "sqmeters",
+          secondaryAreaUnit = "hectares",
+          localization = 'pt_BR'
+        ) %>%
+        addDrawToolbar(
+          targetGroup = 'draw',
+          editOptions = editToolbarOptions(selectedPathOptions = selectedPathOptions())
+        )  %>%
+        addLayersControl(
+          overlayGroups = c('draw', "model", "MA"),
+          options =
+            layersControlOptions(collapsed = FALSE)
+        ) %>%
+        addStyleEditor()
+    })
+    
+  })
     
   
      #--------------

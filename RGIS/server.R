@@ -1,5 +1,7 @@
 server <- function(input,output, session){
   
+  
+    #plot points ####
   observeEvent(input$plot_point, {
     df <- read.csv(
       input$file1$datapath,
@@ -14,7 +16,8 @@ server <- function(input,output, session){
     output$mymap <- renderLeaflet({
         m <- leaflet(df) %>% 
           addTiles() %>% 
-          addMarkers(~lon, ~lat) %>% 
+          addMarkers(~lon, ~lat, group = "points", popup = paste("<i>", df$sp,"</i>","<br>","Longitude", df$lon,"<br>", "Latitude" , df$lat), 
+                      popupOptions = popupOptions(closeButton = TRUE)) %>% 
           addScaleBar(position = "bottomleft", options = scaleBarOptions(imperial = F)) %>%
           addProviderTiles(providers$Esri.WorldImagery) %>%
           addMiniMap(tiles = providers$Esri.WorldStreetMap, toggleDisplay = TRUE, position = "bottomright") %>%
@@ -22,12 +25,13 @@ server <- function(input,output, session){
             secondaryAreaUnit = "hectares", localization = 'pt_BR') %>%
           addDrawToolbar(targetGroup = 'draw',
                          editOptions = editToolbarOptions(selectedPathOptions = selectedPathOptions()))  %>%
+          addLayersControl(overlayGroups = c('draw', "points"), options = layersControlOptions(collapsed = FALSE)) %>%
           addStyleEditor()
       })
     
   })
   
-  #plot raster
+  #plot raster ####
   observeEvent(input$plot_raster, {
     modelo <- raster(
       input$file2$datapath
@@ -37,7 +41,7 @@ server <- function(input,output, session){
       pal <- colorNumeric(rev(terrain.colors(25)), values(modelo),
                           na.color = "transparent")
       m <- leaflet() %>% addTiles() %>%
-        addRasterImage(modelo, colors = pal, opacity = input$alpha, group = 'model') %>%
+        addRasterImage(modelo, colors = pal, opacity = input$alpha, group = 'raster') %>%
         addProviderTiles(providers$Esri.WorldImagery) %>% 
         addLegend(pal = pal, values = values(modelo),
                   title = "Bio_01") %>% 
@@ -47,15 +51,67 @@ server <- function(input,output, session){
         addDrawToolbar(
           targetGroup = 'draw',
           editOptions = editToolbarOptions(selectedPathOptions = selectedPathOptions()))  %>%
-        addLayersControl(overlayGroups = c('draw', "model"), options =
+        addLayersControl(overlayGroups = c('draw', "raster"), options =
                            layersControlOptions(collapsed = FALSE)) %>%
+        
         addStyleEditor()
     })
     
   })
   
   
-  #plot shape
+  #add points ####
+  observeEvent(input$add_point, {
+    df <- read.csv(
+      input$file1$datapath,
+      header = input$header,
+      sep = input$sep
+    )
+    
+    modelo <- raster(
+      input$file2$datapath)
+      
+    output$mymap <- renderLeaflet({
+      pal <- colorNumeric(rev(terrain.colors(25)), values(modelo),
+                          na.color = "transparent")
+      m <- leaflet() %>% addTiles() %>%
+        addRasterImage(modelo, colors = pal, opacity = input$alpha, group = 'raster') %>%
+        addMarkers(data = df, ~lon, ~lat, group = "points", popup = paste("<i>", df$sp,"</i>","<br>","Longitude", df$lon,"<br>", "Latitude" , df$lat), popupOptions = popupOptions(closeButton = TRUE)) %>% 
+        addProviderTiles(providers$Esri.WorldImagery) %>% 
+        addLegend(pal = pal, values = values(modelo),
+                  title = "Bio_01") %>% 
+        addMiniMap(tiles = providers$Esri.WorldStreetMap, toggleDisplay = TRUE, position = "bottomright") %>% 
+        addMeasure(primaryLengthUnit = "meters", secondaryLengthUnit = "kilometers",
+                   primaryAreaUnit = "sqmeters", secondaryAreaUnit = "hectares", localization = 'pt_BR') %>% 
+        addDrawToolbar(
+          targetGroup = 'draw',
+          editOptions = editToolbarOptions(selectedPathOptions = selectedPathOptions()))  %>%
+        addLayersControl(overlayGroups = c('draw', "raster", 'points'), options =
+                           layersControlOptions(collapsed = FALSE)) %>%
+        
+        addStyleEditor()
+    })
+    
+  })
+  
+    output$mymap <- renderLeaflet({
+      m <- leaflet(df) %>% 
+        addTiles() %>% 
+        addMarkers(~lon, ~lat, group = "points", popup = paste("<i>", df$sp,"</i>","<br>","Longitude", df$lon,"<br>", "Latitude" , df$lat), 
+                   popupOptions = popupOptions(closeButton = TRUE)) %>% 
+        addScaleBar(position = "bottomleft", options = scaleBarOptions(imperial = F)) %>%
+        addProviderTiles(providers$Esri.WorldImagery) %>%
+        addMiniMap(tiles = providers$Esri.WorldStreetMap, toggleDisplay = TRUE, position = "bottomright") %>%
+        addMeasure(primaryLengthUnit = "meters", secondaryLengthUnit = "kilometers", primaryAreaUnit = "sqmeters",
+                   secondaryAreaUnit = "hectares", localization = 'pt_BR') %>%
+        addDrawToolbar(targetGroup = 'draw',
+                       editOptions = editToolbarOptions(selectedPathOptions = selectedPathOptions()))  %>%
+        addLayersControl(overlayGroups = c('draw', "points"), options = layersControlOptions(collapsed = FALSE)) %>%
+        addStyleEditor()
+    })
+    
+
+  #plot shape ####
   observeEvent(input$plot_shape, {
     shape <- rgdal::readOGR(input$file3$datapath)
     
@@ -89,7 +145,7 @@ server <- function(input,output, session){
           editOptions = editToolbarOptions(selectedPathOptions = selectedPathOptions())
         )  %>%
         addLayersControl(
-          overlayGroups = c('draw', "model", "MA"),
+          overlayGroups = c('draw', "vetor"),
           options =
             layersControlOptions(collapsed = FALSE)
         ) %>%
@@ -99,7 +155,7 @@ server <- function(input,output, session){
   })
     
   
-     #--------------
+     #--------------#
   
   
   output$mymap <- renderLeaflet({

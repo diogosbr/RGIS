@@ -12,7 +12,7 @@ ui <- fluidPage(
   sidebarLayout(
     
     # Barra lateral para os inputs.
-    sidebarPanel(
+    sidebarPanel(width = 3,
       #inserindo arquivo:
       fileInput(
         "file1",
@@ -43,7 +43,7 @@ ui <- fluidPage(
       tags$hr(), 
       
       # Main panel for displaying outputs ----
-      tabPanel(tableOutput("df"))
+      tabPanel("Head da tabela",tableOutput("df"))
       ,
       
       # Horizontal line ----
@@ -53,7 +53,7 @@ ui <- fluidPage(
       fileInput("file3", "Vetor", multiple = FALSE, accept = c(".shp")),
       actionButton("plot_shape", "OK"),
       
-      # Horizontal line ----
+      # Horizontal line
       tags$hr(),
       
       #inserindo arquivo:
@@ -67,6 +67,7 @@ ui <- fluidPage(
                    ".bil")
       ),
       actionButton("plot_raster", "OK"),
+      actionButton("add_point", "Add"),
       
       # Input: número de classes do histograma.
       sliderInput(inputId = "alpha",
@@ -76,6 +77,7 @@ ui <- fluidPage(
                   value = 0.5)
       
     ),
+    
     
 
     # Painel principal para mostrar os outputs.

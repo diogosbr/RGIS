@@ -6,3 +6,7 @@ library(dplyr)
 library(raster)
 library(rgdal)
 library(shinyBS)
+library(shinyFiles)
+
+library(crosstalk)
+library(DT)

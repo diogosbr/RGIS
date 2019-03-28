@@ -1,20 +1,16 @@
-# ui <- fluidPage(
-#   leafletOutput("mymap",height = 1000)
-# )
-
-# Define a interface do usuário para o app que gera um histograma.
 ui <- fluidPage(
   
-  # Título do app.
+  # Título do app. ####
   titlePanel("RGIS"),
   
-  # Barra lateral com as definições do input e do output.
+  # Barra lateral com as definições do input e do output. ####
   sidebarLayout(
     
-    # Barra lateral para os inputs.
+    # Barra lateral para os inputs. ####
     sidebarPanel(width = 3,
-      #inserindo arquivo:
-      fileInput(
+
+    #inserindo arquivo csv ####
+    fileInput(
         "file1",
         "Tabela (.csv)",
         multiple = TRUE,
@@ -22,10 +18,10 @@ ui <- fluidPage(
                    "text/comma-separated-values,text/plain",
                    ".csv")
       ),
-      # Input: Checkbox if file has header ----
+      # Input: Checkbox if file has header ####
       checkboxInput("header", "Cabeçalho", TRUE),
       
-      # Input: Select separator ----
+      # Input: Select separator ####
       radioButtons(
         "sep",
         "Separador",
@@ -39,24 +35,25 @@ ui <- fluidPage(
       
       actionButton("plot_point", "OK"),
       
-      # Horizontal line ----
+      # Horizontal line
       tags$hr(), 
       
-      # Main panel for displaying outputs ----
+      # Main panel for displaying outputs
       tabPanel("Head da tabela",tableOutput("df"))
       ,
-      
-      # Horizontal line ----
+
+      # Horizontal line
       tags$hr(),
       
-      #inserindo arquivo:
-      fileInput("file3", "Vetor", multiple = FALSE, accept = c(".shp")),
+      #inserindo arquivo shape ####
+      textInput("shape_path", "Shape path", "./biomas.shp"),
+      #fileInput("file3", "Vetor", multiple = TRUE, accept = c('.shp','.dbf','.sbn','.sbx','.shx','.prj')),
       actionButton("plot_shape", "OK"),
       
       # Horizontal line
       tags$hr(),
       
-      #inserindo arquivo:
+      #inserindo arquivo raster ####
       fileInput(
         "file2",
         "Raster",
@@ -69,13 +66,12 @@ ui <- fluidPage(
       actionButton("plot_raster", "OK"),
       actionButton("add_point", "Add"),
       
-      # Input: número de classes do histograma.
+      #barra da tranparencia ####
       sliderInput(inputId = "alpha",
-                  label = "Transparencia",
+                  label = "Transparencia do raster",
                   min = 0,
                   max = 1,
                   value = 0.5)
-      
     ),
     
     

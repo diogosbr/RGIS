@@ -27,6 +27,9 @@ server <- function(input, output, session){
   
   #plot points ####
   observeEvent(input$plot_point, {
+    if (!exists("input$file1$datapath")) {
+      showNotification("Insira a tabela com os registros", type = "error")
+    }else {
     df <- read.csv(
       input$file1$datapath,
       header = input$header,
@@ -45,6 +48,7 @@ server <- function(input, output, session){
       addStyleEditor()
     
     output$mymap <- renderLeaflet({m_points})
+    }
   })
   
   #plot raster ####

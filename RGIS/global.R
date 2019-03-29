@@ -1,3 +1,9 @@
+# instalando pacotes
+packages = c("shiny", "shinydashboard", "leaflet", "randomForest", 'leaflet.extras', "dplyr", "raster", "rgdal", "shinyBS", "shinyFiles")
+for (p in setdiff(packages, installed.packages()[, "Package"])) {
+  install.packages(p, dependencies = T)
+}
+
 library(shiny)
 library(shinydashboard)
 library(leaflet)

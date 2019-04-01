@@ -6,7 +6,10 @@ server <- function(input, output, session){
     addTiles() %>% 
     setView(lng = -50, lat = -12 , zoom = 4) %>% 
     addScaleBar(position = "bottomleft", options = scaleBarOptions(imperial = F)) %>%
-    addProviderTiles(providers$Esri.WorldImagery) %>%
+    addProviderTiles(providers$Esri.WorldImagery, group = "Satelite") %>%
+    addProviderTiles(providers$Esri.WorldStreetMap, group = "Streetmap") %>%
+    addProviderTiles(providers$Esri.WorldTerrain, group = "Terrain") %>%
+    addProviderTiles(providers$Esri.WorldPhysical, group = "Physical") %>%
     addMiniMap(tiles = providers$Esri.WorldStreetMap,toggleDisplay = TRUE,position = "bottomright") %>%
     addMeasure(
       primaryLengthUnit = "meters",
@@ -17,10 +20,29 @@ server <- function(input, output, session){
     ) %>%
     addDrawToolbar(
       targetGroup = 'draw',
-      editOptions = editToolbarOptions(selectedPathOptions = selectedPathOptions())
+      editOptions = editToolbarOptions(selectedPathOptions = selectedPathOptions()),
+      polylineOptions = drawShapeOptions(),
+      polygonOptions = drawShapeOptions(),
+      circleOptions = drawShapeOptions(),
+      rectangleOptions = drawShapeOptions()
     )
   
-  output$mymap <- renderLeaflet({m_base})
+  output$mymap <- renderLeaflet({
+    m_base %>%
+      addLayersControl(baseGroups = c("Satelite", 'Streetmap', "Terrain", "Physical"),
+                       overlayGroups = c('draw'),
+                       options = layersControlOptions(collapsed = FALSE))  %>%
+      addStyleEditor()
+    })
+  
+  observeEvent(input$mymap_shape_click,{
+    print(input$mymap_shape_click)
+  })
+ 
+  observeEvent(input$mymap_click,{
+    #print(input$mymap_click)
+  })
+
   
   #plot points ####
   observeEvent(input$plot_point, {
@@ -42,7 +64,9 @@ server <- function(input, output, session){
       m_base %>% 
       addMarkers(data = df, ~lon, ~lat, group = "points", popup = paste("<i>", df$sp,"</i>","<br>","Longitude", df$lon,"<br>", "Latitude" , df$lat), 
                  popupOptions = popupOptions(closeButton = TRUE)) %>% 
-      addLayersControl(overlayGroups = c('draw', "points"), options = layersControlOptions(collapsed = FALSE))  %>%
+      addLayersControl(baseGroups = c("Satelite", 'Streetmap', "Terrain", "Physical"),
+                       overlayGroups = c('draw', "points"), 
+                       options = layersControlOptions(collapsed = FALSE))  %>%
       addStyleEditor()
     
     output$mymap <- renderLeaflet({m_points})
@@ -63,8 +87,9 @@ server <- function(input, output, session){
       addRasterImage(modelo, colors = pal, opacity = input$alpha, group = 'raster') %>%
       addLegend(pal = pal, values = values(modelo),
                 title = "Legend") %>% 
-      addLayersControl(overlayGroups = c('draw', "raster"), options =
-                         layersControlOptions(collapsed = FALSE))  %>%
+      addLayersControl(baseGroups = c("Satelite", 'Streetmap', "Terrain", "Physical"),
+                       overlayGroups = c('draw', "raster"),
+                       options = layersControlOptions(collapsed = FALSE))  %>%
       addStyleEditor()
     
     output$mymap <- renderLeaflet({m_raster})
@@ -93,8 +118,9 @@ server <- function(input, output, session){
       addLegend(pal = pal, values = values(modelo),
                 title = "Legend") %>% 
       addMarkers(data = df, ~lon, ~lat, group = "points", popup = paste("<i>", df$sp,"</i>","<br>","Longitude", df$lon,"<br>", "Latitude" , df$lat), popupOptions = popupOptions(closeButton = TRUE)) %>% 
-      addLayersControl(overlayGroups = c('draw', "raster", 'points'), options =
-                         layersControlOptions(collapsed = FALSE))  %>%
+      addLayersControl(baseGroups = c("Satelite", 'Streetmap', "Terrain", "Physical"),
+                       overlayGroups = c('draw', "raster", 'points'), 
+                       options = layersControlOptions(collapsed = FALSE))  %>%
       addStyleEditor()
     
     output$mymap <- renderLeaflet({m_add_pts})
@@ -121,9 +147,9 @@ server <- function(input, output, session){
         color = "black",
         group = "vetor"
       ) %>%
-      addLayersControl(
-        overlayGroups = c('draw', "vetor"),
-        options = layersControlOptions(collapsed = FALSE)
+      addLayersControl(baseGroups = c("Satelite", 'Streetmap', "Terrain", "Physical"),
+                       overlayGroups = c('draw', "vetor"),
+                       options = layersControlOptions(collapsed = FALSE)
       )
     
     output$mymap <- renderLeaflet({m_shape})

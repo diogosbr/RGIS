@@ -1,3 +1,4 @@
+options(shiny.maxRequestSize=40*1024^2)
 server <- function(input, output, session){
   
   #MAPA base ####
@@ -6,11 +7,7 @@ server <- function(input, output, session){
     setView(lng = -50, lat = -12 , zoom = 4) %>% 
     addScaleBar(position = "bottomleft", options = scaleBarOptions(imperial = F)) %>%
     addProviderTiles(providers$Esri.WorldImagery) %>%
-    addMiniMap(
-      tiles = providers$Esri.WorldStreetMap,
-      toggleDisplay = TRUE,
-      position = "bottomright"
-    ) %>%
+    addMiniMap(tiles = providers$Esri.WorldStreetMap,toggleDisplay = TRUE,position = "bottomright") %>%
     addMeasure(
       primaryLengthUnit = "meters",
       secondaryLengthUnit = "kilometers",
@@ -27,8 +24,9 @@ server <- function(input, output, session){
   
   #plot points ####
   observeEvent(input$plot_point, {
-    if (!exists("input$file1$datapath")) {
-      showNotification("Insira a tabela com os registros", type = "error")
+    if (is(try(read.csv(input$file1$datapath, header = input$header,sep = input$sep), silent = T),"try-error")) {
+      shinyalert("Oops!", "Something went wrong.", type = "error")
+      #showNotification("Insira a tabela com os registros", type = "error")
     }else {
     df <- read.csv(
       input$file1$datapath,
@@ -53,7 +51,10 @@ server <- function(input, output, session){
   
   #plot raster ####
   observeEvent(input$plot_raster, {
-    
+    if (is(try(raster::raster(input$file2$datapath), silent = T),"try-error")) {
+      shinyalert("Oops!", "Something went wrong.", type = "error")
+      #showNotification("Insira o raster", type = "error")
+    }else {
     modelo <- raster::raster(input$file2$datapath)
     
     pal <- colorNumeric(rev(terrain.colors(25)), values(modelo),
@@ -67,12 +68,17 @@ server <- function(input, output, session){
       addStyleEditor()
     
     output$mymap <- renderLeaflet({m_raster})
+    }
     
   })
   
   
   #add points ####
   observeEvent(input$add_point, {
+    if (is(try(read.csv(input$file1$datapath, header = input$header,sep = input$sep), silent = T),"try-error") | is(try(raster::raster(input$file2$datapath), silent = T),"try-error")) {
+      shinyalert("Oops!", "Something went wrong.", type = "error")
+      #showNotification("Insira a tabela com os registros", type = "error")
+    }else {
     df <- read.csv(
       input$file1$datapath,
       header = input$header,
@@ -92,13 +98,16 @@ server <- function(input, output, session){
       addStyleEditor()
     
     output$mymap <- renderLeaflet({m_add_pts})
+    }
     
   })
-  
   #plot shape ####
   observeEvent(input$plot_shape, {
+    if (is(try(rgdal::readOGR(input$shape_path), silent = T),"try-error")) {
+      shinyalert("Oops!", "Something went wrong.", type = "error")
+      #showNotification("ERRO: Insira um shape válido", type = "error")
+    }else {
     #shape <- rgdal::readOGR(input$file3$datapath)
-    abc <<- input$shape_path
     shape <- rgdal::readOGR(input$shape_path)
 
     m_shape <- m_base %>% 
@@ -114,10 +123,10 @@ server <- function(input, output, session){
       ) %>%
       addLayersControl(
         overlayGroups = c('draw', "vetor"),
-        options =
-          layersControlOptions(collapsed = FALSE)
+        options = layersControlOptions(collapsed = FALSE)
       )
     
     output$mymap <- renderLeaflet({m_shape})
+    }
   })
 }

@@ -1,4 +1,5 @@
 ui <- fluidPage(
+  useShinyalert(),
   
   # Título do app. ####
   titlePanel("RGIS"),

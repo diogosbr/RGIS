@@ -14,10 +14,13 @@ ui <- fluidPage(
     fileInput(
         "file1",
         "Tabela (.csv)",
-        multiple = TRUE,
+        multiple = FALSE,
         accept = c("text/csv",
                    "text/comma-separated-values,text/plain",
-                   ".csv")
+                   ".csv"),
+        width = "100%",
+        buttonLabel = "Arquivo",
+        placeholder = "Insira arquivo csv"
       ),
       # Input: Checkbox if file has header ####
       checkboxInput("header", "Cabeçalho", TRUE),
@@ -25,12 +28,13 @@ ui <- fluidPage(
       # Input: Select separator ####
       radioButtons(
         "sep",
-        "Separador",
+        "Separador de coluna",
         choices = c(
-          "Ponto e vírgula" = ";",
-          "Vígula" = ",",
-          "Tabulação" = "\t"
+          " ; " = ";",
+          " , " = ",",
+          "tab" = "\t"
         ),
+        inline = T,
         selected = ","
       ),
       
@@ -47,7 +51,7 @@ ui <- fluidPage(
       tags$hr(),
       
       #inserindo arquivo shape ####
-      textInput("shape_path", "Shape path", "./biomas.shp"),
+      textInput("shape_path", "Shape path", "./Exemplos/biomas.shp"),
       #fileInput("file3", "Vetor", multiple = TRUE, accept = c('.shp','.dbf','.sbn','.sbx','.shx','.prj')),
       actionButton("plot_shape", "OK"),
       
@@ -76,7 +80,6 @@ ui <- fluidPage(
     ),
     
     
-
     # Painel principal para mostrar os outputs.
     mainPanel(
       

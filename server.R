@@ -47,7 +47,8 @@ server <- function(input, output, session){
   #plot points ####
   observeEvent(input$plot_point, {
     if (is(try(read.csv(input$file1$datapath, header = input$header,sep = input$sep), silent = T),"try-error")) {
-      shinyalert("Oops!", "Something went wrong.", type = "error")
+      shinyalert("Oops!", "Something went wrong.", type = "error", confirmButtonCol = "darkgreen", 
+                 closeOnClickOutside = TRUE)
       #showNotification("Insira a tabela com os registros", type = "error")
     }else {
     df <- read.csv(
@@ -137,7 +138,8 @@ server <- function(input, output, session){
     shape <- rgdal::readOGR(input$shape_path)
 
     m_shape <- m_base %>% 
-      addPolygons(data = shape,
+      addPolygons(
+        data = shape,
         stroke = T,
         smoothFactor = 0.2,
         #fillOpacity = 0.9,
@@ -145,7 +147,12 @@ server <- function(input, output, session){
         fill = F,
         opacity = 1,
         color = "black",
-        group = "vetor"
+        group = "vetor",
+        highlightOptions = highlightOptions(weight = 5,
+                                            color = "red",
+                                            fillOpacity = 0.7,
+                                            bringToFront = T),
+        label = ~BIOMA
       ) %>%
       addLayersControl(baseGroups = c("Satelite", 'Streetmap', "Terrain", "Physical"),
                        overlayGroups = c('draw', "vetor"),

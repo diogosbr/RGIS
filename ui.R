@@ -53,6 +53,7 @@ ui <- fluidPage(
       #inserindo arquivo shape ####
       textInput("shape_path", "Shape path", "./Exemplos/biomas.shp"),
       #fileInput("file3", "Vetor", multiple = TRUE, accept = c('.shp','.dbf','.sbn','.sbx','.shx','.prj')),
+      textInput("cor", "Cor", 'black', width = "25%"),
       actionButton("plot_shape", "OK"),
       
       # Horizontal line
@@ -82,7 +83,7 @@ ui <- fluidPage(
     
     # Painel principal para mostrar os outputs.
     mainPanel(
-      
+      h3("Mapa"),
       # Output: MAPA
       leafletOutput("mymap",height = 800)
 

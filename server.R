@@ -35,9 +35,9 @@ server <- function(input, output, session){
       addStyleEditor()
     })
   
-  observeEvent(input$mymap_shape_click,{
-    print(input$mymap_shape_click)
-  })
+  # observeEvent(input$mymap_shape_click,{
+  #   print(input$mymap_shape_click)
+  # })
  
   observeEvent(input$mymap_click,{
     #print(input$mymap_click)
@@ -146,7 +146,7 @@ server <- function(input, output, session){
         weight = 1,
         fill = F,
         opacity = 1,
-        color = "black",
+        color = input$cor,
         group = "vetor",
         highlightOptions = highlightOptions(weight = 5,
                                             color = "red",

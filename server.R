@@ -131,7 +131,7 @@ server <- function(input, output, session){
   #plot shape ####
   observeEvent(input$plot_shape, {
     if (is(try(rgdal::readOGR(input$shape_path), silent = T),"try-error")) {
-      shinyalert("Oops!", "Something went wrong.", type = "error")
+      shinyalert("Oops!", "Something went wrong.", type = "error", confirmButtonCol = "darkgreen", closeOnClickOutside = TRUE)
       #showNotification("ERRO: Insira um shape válido", type = "error")
     }else {
     #shape <- rgdal::readOGR(input$file3$datapath)
@@ -144,7 +144,7 @@ server <- function(input, output, session){
         smoothFactor = 0.2,
         #fillOpacity = 0.9,
         weight = 1,
-        fill = F,
+        fill = T,
         opacity = 1,
         color = input$cor,
         group = "vetor",

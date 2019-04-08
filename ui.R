@@ -22,6 +22,9 @@ ui <- fluidPage(
         buttonLabel = "Arquivo",
         placeholder = "Insira arquivo csv"
       ),
+    
+    textInput(inputId="lon", label = "lon", value = "lon", width = "25%"),
+    textInput(inputId="lat", label = "lat", value = "lat", width = "25%"),
       # Input: Checkbox if file has header ####
       checkboxInput("header", "Cabeçalho", TRUE),
       
@@ -44,8 +47,7 @@ ui <- fluidPage(
       tags$hr(), 
       
       # Main panel for displaying outputs
-      tabPanel("Head da tabela",tableOutput("df"))
-      ,
+      tabPanel("Head da tabela",tableOutput("df")),
 
       # Horizontal line
       tags$hr(),
@@ -53,7 +55,7 @@ ui <- fluidPage(
       #inserindo arquivo shape ####
       textInput("shape_path", "Shape path", "./Exemplos/biomas.shp"),
       #fileInput("file3", "Vetor", multiple = TRUE, accept = c('.shp','.dbf','.sbn','.sbx','.shx','.prj')),
-      textInput("cor", "Cor", 'black', width = "25%"),
+      selectInput("cor", "Cor", choices = c('black', "green", "blue", "red", "white", "darkgreen", "darkblue", "darkred"), width = "50%"),
       actionButton("plot_shape", "OK"),
       
       # Horizontal line
@@ -67,7 +69,9 @@ ui <- fluidPage(
         accept = c("image/tiff",
                    ".tiff",
                    ".asc",
-                   ".bil")
+                   ".bil"),
+        buttonLabel = "Arquivo",
+        placeholder = "Insira o raster"
       ),
       actionButton("plot_raster", "OK"),
       actionButton("add_point", "Add"),
@@ -80,13 +84,11 @@ ui <- fluidPage(
                   value = 0.5)
     ),
     
-    
-    # Painel principal para mostrar os outputs.
+    # Painel principal para mostrar os outputs.####
     mainPanel(
       h3("Mapa"),
       # Output: MAPA
       leafletOutput("mymap",height = 800)
-
     )
   )
 )

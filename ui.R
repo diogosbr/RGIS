@@ -48,7 +48,7 @@ ui <- fluidPage(
       
       # Main panel for displaying outputs
       tabPanel("Head da tabela",tableOutput("df")),
-
+    
       # Horizontal line
       tags$hr(),
       
@@ -91,4 +91,4 @@ ui <- fluidPage(
       leafletOutput("mymap",height = 800)
     )
   )
-)
+)  

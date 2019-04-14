@@ -45,10 +45,9 @@ server <- function(input, output, session){
 
   
   #plot points ####
-  observeEvent(input$plot_point, {
+  observeEvent(input$plot_point, {#botao de adicionar
     if (is(try(read.csv(input$file1$datapath, header = input$header,sep = input$sep), silent = T),"try-error")) {
-      shinyalert("Oops!", "Something went wrong.", type = "error", confirmButtonCol = "darkgreen", 
-                 closeOnClickOutside = TRUE)
+      shinyalert("Oops!", "Something went wrong.", type = "error", confirmButtonCol = "darkgreen", closeOnClickOutside = TRUE)
       #showNotification("Insira a tabela com os registros", type = "error")
     }else {
     df <- read.csv(
@@ -57,10 +56,18 @@ server <- function(input, output, session){
       sep = input$sep
     )
     
+    #erro2 cabecalho errado
+    if (sum(names(df) == input$lon) < 1 | sum(names(df) == input$lat) < 1) {
+      shinyalert("Oops!", "O verifique nome da coluna de lonngitude e/ou latitude.", type = "error", confirmButtonCol = "darkgreen", closeOnClickOutside = TRUE)
+    }else{
+      names(df)[names(df) == input$lon] <- "lon"
+      names(df)[names(df) == input$lat] <- "lat"
+    }
+    
     output$df <- renderTable({
       head(df)
     })
-    
+
     m_points <- 
       m_base %>% 
       addMarkers(data = df, ~lon, ~lat, group = "points", popup = paste("<i>", df$sp,"</i>","<br>","Longitude", df$lon,"<br>", "Latitude" , df$lat), 

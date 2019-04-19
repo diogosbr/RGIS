@@ -1,4 +1,4 @@
-options(shiny.maxRequestSize=40*1024^2)
+options(shiny.maxRequestSize = 40*1024^2)
 server <- function(input, output, session){
   
   #MAPA base ####
@@ -88,9 +88,27 @@ server <- function(input, output, session){
       #showNotification("Insira o raster", type = "error")
     }else {
     modelo <- raster::raster(input$file2$datapath)
-    
-    pal <- colorNumeric(rev(terrain.colors(25)), values(modelo),
-                        na.color = "transparent")
+    # selecao de cores ----
+    if (input$col_raster == 'terrain.colors') {
+      pal <- colorNumeric(rev(terrain.colors(25)), values(modelo),
+                          na.color = "transparent")
+    }
+    if (input$col_raster == "topo.colors") {
+      pal <- colorNumeric(rev((25)), values(modelo),
+                          na.color = "transparent")
+    }
+    if (input$col_raster == "heat.colors") {
+      pal <- colorNumeric(rev(heat.colors(25)), values(modelo),
+                          na.color = "transparent")
+    }
+    if (input$col_raster == "cm.colors") {
+      pal <- colorNumeric(rev(cm.colors(25)), values(modelo),
+                          na.color = "transparent")
+    }
+    if (input$col_raster == "rainbow") {
+      pal <- colorNumeric(rev(rainbow(25)), values(modelo),
+                          na.color = "transparent")
+    }
     m_raster <- m_base %>% 
       addRasterImage(modelo, colors = pal, opacity = input$alpha, group = 'raster') %>%
       addLegend(pal = pal, values = values(modelo),
@@ -135,6 +153,7 @@ server <- function(input, output, session){
     }
     
   })
+  
   #plot shape ####
   observeEvent(input$plot_shape, {
     if (is(try(rgdal::readOGR(input$shape_path), silent = T),"try-error")) {
@@ -147,15 +166,16 @@ server <- function(input, output, session){
     m_shape <- m_base %>% 
       addPolygons(
         data = shape,
-        stroke = T,
-        smoothFactor = 0.2,
-        #fillOpacity = 0.9,
-        weight = 1,
-        fill = T,
+        stroke = input$stroke,
+        smoothFactor = 1,
+        weight = 1, #stroke width in pixels
+        fill = input$fill,
+        fillOpacity = input$fillopacity,
+        fillColor = input$col_vec,
         opacity = 1,
         color = input$cor,
         group = "vetor",
-        highlightOptions = highlightOptions(weight = 5,
+        highlightOptions = highlightOptions(weight = 4,
                                             color = "red",
                                             fillOpacity = 0.7,
                                             bringToFront = T),
@@ -165,8 +185,8 @@ server <- function(input, output, session){
                        overlayGroups = c('draw', "vetor"),
                        options = layersControlOptions(collapsed = FALSE)
       )
-    
     output$mymap <- renderLeaflet({m_shape})
     }
   })
+  
 }

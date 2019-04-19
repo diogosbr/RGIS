@@ -55,7 +55,7 @@ body <- dashboardBody(
         #Botao OK ----
         actionButton("plot_point", "OK")
       ),
-      #Raster (aba)----
+      #RASTER (aba)----
       tabPanel(
         "Raster",
         #inserir arquivo ----
@@ -70,10 +70,20 @@ body <- dashboardBody(
           buttonLabel = "Arquivo",
           placeholder = "Insira o raster"
         ),
-        #Botao OK e ADD
-        actionButton("plot_raster", "OK"),
-        actionButton("add_point", "Add"),
         
+        #cores do raster ----
+        selectInput(
+          "col_raster",
+          "Cores",
+          choices = c(
+            'terrain.colors',
+            "topo.colors",
+            "heat.colors",
+            "cm.colors",
+            "rainbow"
+          ),
+          width = "50%"
+        ),
         #barra da tranparencia ----
         sliderInput(
           inputId = "alpha",
@@ -81,19 +91,28 @@ body <- dashboardBody(
           min = 0,
           max = 1,
           value = 0.5
-        )
+        ),
+        #Botao OK e ADD ----
+        actionButton("plot_raster", "OK")
+        #actionButton("add_point", "Add"),
+        
       ),
-        #Vetor (aba) ----
+      
+        #VETOR (aba) ----
       tabPanel(
         "Vetor",
-        #inserir arquivo
+        
+        #inserir arquivo 0 ----
+        #shinyFilesButton("shape_path", "Escolha o shape", "UPload", multiple = FALSE),
+        #actionButton("shape_path", "Select file"),
+        #inserir arquivo ----
         textInput("shape_path", "Selecionar caminho do arquivo", "./Exemplos/biomas.shp"),
         #fileInput("file3", "Vetor", multiple = TRUE, accept = c('.shp','.dbf','.sbn','.sbx','.shx','.prj')),
         
         #cor da linha ----
         selectInput(
           "cor",
-          "Cor",
+          "Contorno",
           choices = c(
             'black',
             "green",
@@ -106,7 +125,35 @@ body <- dashboardBody(
           ),
           width = "50%"
         ),
-        #Botao OK
+        #Checkbox contorno ----
+        checkboxInput("stroke", "Contorno", TRUE),
+        #cor do preenchimento ----
+        selectInput(
+          "col_vec",
+          "Preenchimento",
+          choices = c(
+            'black',
+            "green",
+            "blue",
+            "red",
+            "white",
+            "darkgreen",
+            "darkblue",
+            "darkred"
+          ),
+          width = "50%"
+        ),
+        #Checkbox preenchimento ----
+        checkboxInput("fill", "Preenchimento", TRUE),
+        #barra da tranparencia ----
+        sliderInput(
+          inputId = "fillopacity",
+          label = "Opacidade",
+          min = 0,
+          max = 1,
+          value = 0.5
+        ),
+        #Botao OK ----
         actionButton("plot_shape", "OK")
       ),
       #ADD (aba) ----

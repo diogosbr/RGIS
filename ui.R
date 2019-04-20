@@ -123,8 +123,16 @@ body <- dashboardBody(
         #inserir arquivo 0 ----
         #shinyFilesButton("shape_path", "Escolha o shape", "UPload", multiple = FALSE),
         #actionButton("shape_path", "Select file"),
+        
         #inserir arquivo ----
-        textInput("shape_path", "Selecionar caminho do arquivo", "./Exemplos/biomas.shp"),
+        textInput("shape_path",
+                  "Caminho do arquivo",
+                  "./Exemplos/biomas.shp"
+                  ),
+        actionButton("shape_path_button", "Escolha o shape",
+                     width = "100%", 
+                     icon = icon("check-circle")),
+        
         #fileInput("file3", "Vetor", multiple = TRUE, accept = c('.shp','.dbf','.sbn','.sbx','.shx','.prj')),
         
         #cor da linha ----
@@ -143,8 +151,10 @@ body <- dashboardBody(
           ),
           width = "50%"
         ),
+        
         #Checkbox contorno ----
         checkboxInput("stroke", "Contorno", TRUE),
+        
         #cor do preenchimento ----
         selectInput(
           "col_vec",
@@ -161,8 +171,10 @@ body <- dashboardBody(
           ),
           width = "50%"
         ),
+        
         #Checkbox preenchimento ----
         checkboxInput("fill", "Preenchimento", TRUE),
+        
         #barra da tranparencia ----
         sliderInput(
           inputId = "fillopacity",
@@ -173,13 +185,65 @@ body <- dashboardBody(
           ticks = F,
           post = "%"
         ),
+        
         #Botao OK ----
         actionButton("plot_shape", "OK", width = "100%", 
-                     icon = icon("check-circle"))
+                     icon = icon("check-circle")),
+        numericInput("label", "Rotulo", '1', 1, 20, width = "15%")
       ),
+      
       #ADD (aba) ----
       tabPanel("ADD", 
-               h3("Em construção...")),
+               h4("Em construção..."),
+               box(width = "100%",
+               
+              #Inserir csv ----
+               fileInput(
+                 "add1",
+                 "CSV",
+                 multiple = FALSE,
+                 accept = c("text/csv",
+                            "text/comma-separated-values,text/plain",
+                            ".csv"),
+                 #width = "100%",
+                 buttonLabel = "Arquivo",
+                 placeholder = "Insira arquivo csv"
+               ),
+               
+               #Inserir raster ----
+               fileInput(
+                 "add2",
+                 "Raster",
+                 multiple = FALSE,
+                 accept = c("image/tiff",
+                            ".tiff",
+                            ".asc",
+                            ".bil"),
+                 buttonLabel = "Arquivo",
+                 placeholder = "Insira o raster"
+               ),
+               
+               #Inserir shape ----
+               textInput("shape_path", "Shape", "./Exemplos/biomas.shp")
+               ),
+               
+               #Botao OK ----
+               actionButton("plot_csv_raster", "Plot csv-raster", 
+                            width = "100%",
+                            icon = icon("check-circle")),
+               #Botao OK ----
+               actionButton("plot_csv_shape", "Plot csv-shape", 
+                            width = "100%",
+                            icon = icon("check-circle")),
+               #Botao OK ----
+               actionButton("plot_shape_raster", "Plot shape-raster",
+                            width = "100%",
+                            icon = icon("check-circle")),
+               #Botao OK ----
+               actionButton("plot_all", "Plot all", width = "100%",
+                            icon = icon("check-circle"))
+              ),
+      
       #FUN (aba) ----
       tabPanel("FUN",
                h3("Em construção...")),

@@ -1,6 +1,11 @@
 options(shiny.maxRequestSize = 40*1024^2)
 server <- function(input, output, session){
   
+  #Update text shape
+  observeEvent(input$shape_path_button,{
+  updateTextInput(session, "shape_path", value = file.choose())
+  })
+  
   #MAPA base ####
   m_base <- leaflet() %>% 
     addTiles() %>% 
@@ -162,7 +167,7 @@ server <- function(input, output, session){
     }else {
     #shape <- rgdal::readOGR(input$file3$datapath)
     shape <- rgdal::readOGR(input$shape_path)
-
+    
     m_shape <- m_base %>% 
       addPolygons(
         data = shape,
@@ -179,7 +184,7 @@ server <- function(input, output, session){
                                             color = "red",
                                             fillOpacity = 0.7,
                                             bringToFront = T),
-        label = ~BIOMA
+        popup = ~shape[[input$label]] #precisa relativizar isso
       ) %>%
       addLayersControl(baseGroups = c("Satelite", 'Streetmap', "Terrain", "Physical"),
                        overlayGroups = c('draw', "vetor"),

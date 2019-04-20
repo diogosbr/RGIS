@@ -12,7 +12,7 @@ body <- dashboardBody(
       #CSV (aba) ----
       tabPanel(
         "CSV",
-        #inserir arquivo ----
+        #Inserir arquivo ----
         fileInput(
           "file1",
           "Selecionar arquivo",
@@ -23,20 +23,6 @@ body <- dashboardBody(
           #width = "100%",
           buttonLabel = "Arquivo",
           placeholder = "Insira arquivo csv"
-        ),
-        #nome coluna longitude ----
-        textInput(
-          inputId = "lon",
-          label = "lon",
-          value = "lon",
-          width = "25%"
-        ),
-        #nome coluna longitude ----
-        textInput(
-          inputId = "lat",
-          label = "lat",
-          value = "lat",
-          width = "25%"
         ),
         
         #Checkbox cabeçalho ----
@@ -52,8 +38,37 @@ body <- dashboardBody(
           inline = T,
           selected = ","
         ),
+        
+        #box(width = "100%", title = "Nomes das colunas",
+            column(width = 5,
+        #nome coluna longitude ----
+        textInput(
+          inputId = "lon",
+          label = "column X",
+          value = "lon",
+          width = "100%"
+        )
+        ),
+        column(width = 5,
+        #nome coluna longitude ----
+        textInput(
+          inputId = "lat",
+          label = "column Y",
+          value = "lat",
+          width = "100%"
+        )
+        #)
+        ),
+        
+        
         #Botao OK ----
-        actionButton("plot_point", "OK")
+        actionButton("plot_point", "OK", width = "100%", 
+                     icon = icon("check-circle")
+                     ),
+        box(title = "Tabela", 
+            width = "100%", 
+            collapsible = TRUE, collapsed = TRUE,
+            tabPanel("Head da tabela",tableOutput("df")))
       ),
       #RASTER (aba)----
       tabPanel(
@@ -89,11 +104,14 @@ body <- dashboardBody(
           inputId = "alpha",
           label = "Opacidade",
           min = 0,
-          max = 1,
-          value = 0.5
+          max = 100,
+          value = 50,
+          ticks = F,
+          post = "%"
         ),
-        #Botao OK e ADD ----
-        actionButton("plot_raster", "OK")
+        #Botao OK ----
+        actionButton("plot_raster", "OK", width = "100%", 
+                     icon = icon("check-circle"))
         #actionButton("add_point", "Add"),
         
       ),
@@ -150,11 +168,14 @@ body <- dashboardBody(
           inputId = "fillopacity",
           label = "Opacidade",
           min = 0,
-          max = 1,
-          value = 0.5
+          max = 100,
+          value = 50,
+          ticks = F,
+          post = "%"
         ),
         #Botao OK ----
-        actionButton("plot_shape", "OK")
+        actionButton("plot_shape", "OK", width = "100%", 
+                     icon = icon("check-circle"))
       ),
       #ADD (aba) ----
       tabPanel("ADD", 

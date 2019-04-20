@@ -110,7 +110,7 @@ server <- function(input, output, session){
                           na.color = "transparent")
     }
     m_raster <- m_base %>% 
-      addRasterImage(modelo, colors = pal, opacity = input$alpha, group = 'raster') %>%
+      addRasterImage(modelo, colors = pal, opacity = input$alpha/100, group = 'raster') %>%
       addLegend(pal = pal, values = values(modelo),
                 title = "Legend") %>% 
       addLayersControl(baseGroups = c("Satelite", 'Streetmap', "Terrain", "Physical"),
@@ -170,7 +170,7 @@ server <- function(input, output, session){
         smoothFactor = 1,
         weight = 1, #stroke width in pixels
         fill = input$fill,
-        fillOpacity = input$fillopacity,
+        fillOpacity = input$fillopacity/100,
         fillColor = input$col_vec,
         opacity = 1,
         color = input$cor,

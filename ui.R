@@ -111,8 +111,8 @@ body <- dashboardBody(
                ),
                #Botao OK ----
                actionButton("plot_raster", "OK", width = "100%",
-                            icon = icon("check-circle"))
-               #actionButton("add_point", "Add"),
+                            icon = icon("check-circle")),
+               actionButton("add_point", "Add"),
 
              ),
 

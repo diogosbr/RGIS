@@ -44,11 +44,6 @@ server <- function(input, output, session){
   #   print(input$mymap_shape_click)
   # })
 
-  observeEvent(input$mymap_click,{
-    #print(input$mymap_click)
-  })
-
-
   #plot points ####
   observeEvent(input$plot_point, {#botao de adicionar
     if (is(try(read.csv(input$file1$datapath, header = input$header,sep = input$sep), silent = T),"try-error")) {
@@ -128,7 +123,6 @@ server <- function(input, output, session){
 
   })
 
-
   #add points ####
   observeEvent(input$add_point, {
     if (is(try(read.csv(input$file1$datapath, header = input$header,sep = input$sep), silent = T),"try-error") | is(try(raster::raster(input$file2$datapath), silent = T),"try-error")) {
@@ -193,5 +187,4 @@ server <- function(input, output, session){
       output$mymap <- renderLeaflet({m_shape})
     }
   })
-
 }

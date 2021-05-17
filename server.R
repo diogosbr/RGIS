@@ -106,13 +106,22 @@ server <- function(input, output, session){
                             na.color = "transparent")
       }
       if (input$col_raster == "rainbow") {
-        pal <- colorNumeric(rev(rainbow(25)), values(modelo),
+        pal <- colorNumeric(rev(rainbow(25)),
+                            values(modelo),
+                            na.color = "transparent")
+      }
+      if (input$col_raster == "nice.colors") {
+        pal <- colorNumeric(colorRampPalette(
+                            c('deepskyblue','green','yellow', 'red'))(25),
+                            values(modelo),
                             na.color = "transparent")
       }
       m_raster <- m_base %>%
         addRasterImage(modelo, colors = pal, opacity = input$alpha/100, group = 'raster') %>%
         addLegend(pal = pal, values = values(modelo),
-                  title = "Legend") %>%
+                  title = "Legend"
+                  #, labFormat = labelFormat(transform = function(x) sort(x, decreasing = TRUE))
+                  ) %>%
         addLayersControl(baseGroups = c("Satelite", 'Streetmap', "Terrain", "Physical"),
                          overlayGroups = c('draw', "raster"),
                          options = layersControlOptions(collapsed = FALSE))  %>%

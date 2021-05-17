@@ -62,7 +62,7 @@ body <- dashboardBody(
 
 
                #Botao OK ----
-               actionButton("plot_point", "OK", width = "100%",
+               actionButton("plot_point", "plot", width = "100%",
                             icon = icon("check-circle")
                ),
                box(title = "Tabela",
@@ -95,7 +95,8 @@ body <- dashboardBody(
                    "topo.colors",
                    "heat.colors",
                    "cm.colors",
-                   "rainbow"
+                   "rainbow",
+                   "nice.colors"
                  ),
                  width = "50%"
                ),
@@ -110,10 +111,10 @@ body <- dashboardBody(
                  post = "%"
                ),
                #Botao OK ----
-               actionButton("plot_raster", "OK", width = "100%",
+               actionButton("plot_raster", "plot", width = "100%",
                             icon = icon("check-circle")),
                actionButton("add_point", "Add"),
-
+               bsTooltip("add_point", "Adiciona a tabela que foi carregada na aba CSV")
              ),
 
              #VETOR (aba) ----
@@ -187,7 +188,7 @@ body <- dashboardBody(
                ),
 
                #Botao OK ----
-               actionButton("plot_shape", "OK", width = "100%",
+               actionButton("plot_shape", "plot", width = "100%",
                             icon = icon("check-circle")),
                numericInput("label", "Rotulo", '1', 1, 20, width = "15%")
              ),

@@ -26,7 +26,7 @@ body <- dashboardBody(
                ),
 
                #Checkbox cabeçalho ----
-               checkboxInput("header", "Cabeçalho", TRUE),
+               checkboxInput("header", "Tem cabeçalho", TRUE),
 
                #Separador coluna ----
                radioButtons(
@@ -44,22 +44,22 @@ body <- dashboardBody(
                       #nome coluna longitude ----
                       textInput(
                         inputId = "lon",
-                        label = "column X",
+                        label = "Longitude",
                         value = "lon",
                         width = "100%"
-                      )
+                      ),
+                      bsTooltip("lon", "Nome da coluna de longitude")
                ),
                column(width = 5,
                       #nome coluna longitude ----
                       textInput(
                         inputId = "lat",
-                        label = "column Y",
+                        label = "Latitude",
                         value = "lat",
                         width = "100%"
-                      )
-                      #)
+                      ),
+                      bsTooltip("lat", "Nome da coluna de latitude")
                ),
-
 
                #Botao OK ----
                actionButton("plot_point", "plot", width = "100%",
@@ -110,10 +110,12 @@ body <- dashboardBody(
                  ticks = F,
                  post = "%"
                ),
+
                #Botao OK ----
-               actionButton("plot_raster", "plot", width = "100%",
+               actionButton("plot_raster", "plot", width = "80%",
                             icon = icon("check-circle")),
-               actionButton("add_point", "Add"),
+               actionButton("add_point", "Add points table", width = "80%",
+                            icon = icon("map-marker-alt")),
                bsTooltip("add_point", "Adiciona a tabela que foi carregada na aba CSV")
              ),
 

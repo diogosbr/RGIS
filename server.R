@@ -148,7 +148,7 @@ server <- function(input, output, session){
                           na.color = "transparent")
 
       m_add_pts <- m_base %>%
-        addRasterImage(modelo, colors = pal, opacity = input$alpha, group = 'raster') %>%
+        addRasterImage(modelo, colors = pal, opacity = input$alpha/100, group = 'raster') %>%
         addLegend(pal = pal, values = values(modelo),
                   title = "Legend") %>%
         addMarkers(data = df, ~lon, ~lat, group = "points", popup = paste("<i>", df$sp,"</i>","<br>","Longitude", df$lon,"<br>", "Latitude" , df$lat), popupOptions = popupOptions(closeButton = TRUE)) %>%

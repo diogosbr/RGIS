@@ -259,7 +259,8 @@ body <- dashboardBody(
     mainPanel(h3("Mapa"),
               # Output: MAPA
               leafletOutput("mymap", height = 800))
-  ))
+  )
+)
 
 #?
 dashboardPage(header,

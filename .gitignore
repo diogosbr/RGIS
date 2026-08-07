@@ -2,3 +2,15 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# registro de deploy (contem dados da conta)
+rsconnect/
+
+# rasters grandes: nao versionar
+Exemplos/it_*.tif
+Exemplos/ub_vals_*.tif
+
+# renv
+renv/library/
+renv/local/
+renv/staging/

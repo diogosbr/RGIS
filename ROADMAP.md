@@ -48,14 +48,17 @@ A ordem importa: a fase 1 destrava todo o resto.
 
 - [x] **1. Migrar para `sf` + `terra`**, removendo `rgdal`, `raster` e `sp`. Sem isso o app não roda.
       Feito no branch `dev`. Ainda não validado em execução: falta rodar localmente.
-- [ ] **2. Reestruturar como pacote R**: `R/`, `DESCRIPTION`, `inst/app/`, função `run_app()`.
-      Habilita uso local e deploy web com o mesmo código.
+- [x] **2. Reestruturar como pacote R**: `R/`, `DESCRIPTION`, `NAMESPACE`, função `run_app()` e
+      `app.R` na raiz para as plataformas de deploy. Feito no branch `dev`. Falta rodar
+      `devtools::document()` e `devtools::check()`, que exigem R.
 - [ ] **3. Núcleo de camadas**: um `reactiveVal` com lista de camadas (id, nome, tipo, dado,
       estilo, visível, ordem) e `leafletProxy` para adicionar/remover sem redesenhar o mapa.
       Elimina a aba ADD inteira e resolve o problema 2.
 - [ ] **4. Modularizar em módulos Shiny** (`mod_upload`, `mod_layers`, `mod_style`, `mod_map`)
       para não virar um `server.R` de mil linhas.
-- [ ] **5. `renv`** para travar versões, e remover o `install.packages()` do `global.R`.
+- [x] **5a.** `install.packages()` automático removido: as dependências agora vivem no
+      `DESCRIPTION`, com versão mínima.
+- [ ] **5b. `renv`** para travar as versões exatas usadas em desenvolvimento e no deploy.
 
 ### Fase 2, ingestão que não quebra
 
@@ -81,7 +84,9 @@ A ordem importa: a fase 1 destrava todo o resto.
 
 - [ ] **13. Validação com mensagem específica**, do tipo "a coluna 'lon' não existe; encontradas:
       sp, longitude, latitude", no lugar de "Something went wrong".
-- [ ] **14. Dados de exemplo** em `inst/extdata` com botão "carregar exemplo".
+- [ ] **14. Dados de exemplo** em `inst/extdata` com botão "carregar exemplo". Os exemplos
+      antigos foram removidos do repositório; as regras e a lista do que falta estão em
+      `inst/extdata/README.md`.
 - [ ] **15. Aba Ajuda de verdade**: formatos aceitos, exigências de CRS, limites de tamanho e um
       passo a passo.
 - [ ] **16. Indicador de progresso** ao carregar arquivo grande, para não parecer travamento.
@@ -118,13 +123,14 @@ Em ordem de valor por esforço.
 
 ## Dívida de repositório
 
-- Os branches `master` e `layout` divergiram. `layout` é a ponta real do trabalho (9 commits à
-  frente); o único commit exclusivo do `master` (`5ce8511`, "creating project") apenas adiciona
-  `.gitignore` e `RGIS.Rproj`, que o `layout` já tem. Vale consolidar em um branch principal
-  único antes do v1.0.
-- Rasters grandes (`.tif` de 24 MB e 4,9 MB) ficaram fora do versionamento via `.gitignore`.
-  Os exemplos que ficarem no repo devem ser pequenos e ir para `inst/extdata`.
-- **`Exemplos/BIOMAS.shp` não tem `.prj`**, ou seja, não declara CRS. O bounding box
-  (-73,99 / -33,75 / -32,38 / 5,27) confirma graus decimais, então o app assume EPSG:4326 e avisa.
-  Se a origem do dado for conhecida (SIRGAS 2000 e SAD69 são candidatos prováveis para dados
-  brasileiros), vale gerar o `.prj` correto em vez de depender da suposição.
+- `dev` é o branch de desenvolvimento e já contém tudo que importa de `layout`, além da migração
+  para sf/terra e da reestruturação em pacote. Os branches `master` e `layout` divergiram em 2021
+  e ficaram obsoletos: o único commit exclusivo do `master` (`5ce8511`) apenas adiciona
+  `.gitignore` e `RGIS.Rproj`. Consolidar `dev` em um branch principal único (`main`) antes do
+  v1.0 e aposentar os outros dois.
+- A pasta `Exemplos/` foi removida por inteiro. Os arquivos grandes seguem no histórico do git
+  (custo de ~10 MB no clone) e só sairiam de vez com reescrita de histórico, o que não vale a
+  pena. Os novos exemplos vão para `inst/extdata/`, sob as regras descritas lá.
+- Falta rodar `devtools::document()` para gerar `man/`. O `NAMESPACE` foi escrito à mão para o
+  pacote poder ser instalado antes disso; ele já traz o cabeçalho do roxygen2, então
+  `document()` o regenera sem reclamar.

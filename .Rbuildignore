@@ -1,0 +1,8 @@
+^RGIS\.Rproj$
+^\.Rproj\.user$
+^ROADMAP\.md$
+^app\.R$
+^rsconnect$
+^\.git.*$
+^\.gitattributes$
+^LICENSE\.md$

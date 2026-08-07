@@ -6,9 +6,10 @@
 # registro de deploy (contem dados da conta)
 rsconnect/
 
-# rasters grandes: nao versionar
-Exemplos/it_*.tif
-Exemplos/ub_vals_*.tif
+# dados originais, grandes demais para versionar.
+# Os derivados pequenos ficam em inst/extdata/ e esses sao versionados.
+data-raw/*
+!data-raw/README.md
 
 # renv
 renv/library/

@@ -1,22 +1,37 @@
 # Paletas, cores e rotulos.
 
-#' Paletas disponiveis para raster
-#'
-#' Cada entrada recebe o numero de classes e devolve esse numero de cores. As
-#' paletas base do R vao do valor alto para o baixo, e por isso sao invertidas:
-#' em mapa de adequabilidade o esperado e o valor alto chamar mais atencao.
+#' Nomes das paletas oferecidas para raster
 #'
 #' @noRd
-.PALETAS_RASTER <- list(
-  "terrain.colors" = function(n) rev(grDevices::terrain.colors(n)),
-  "topo.colors"    = function(n) rev(grDevices::topo.colors(n)),
-  "heat.colors"    = function(n) rev(grDevices::heat.colors(n)),
-  "cm.colors"      = function(n) rev(grDevices::cm.colors(n)),
-  "rainbow"        = function(n) rev(grDevices::rainbow(n)),
-  "nice.colors"    = function(n) {
-    grDevices::colorRampPalette(c("deepskyblue", "green", "yellow", "red"))(n)
-  }
+.PALETAS_RASTER <- c(
+  "terrain.colors", "topo.colors", "heat.colors",
+  "cm.colors", "rainbow", "nice.colors"
 )
+
+#' Gera as cores de uma paleta
+#'
+#' As paletas base do R vao do valor alto para o baixo, e por isso sao
+#' invertidas: em mapa de adequabilidade o esperado e o valor alto chamar mais
+#' atencao. Nome desconhecido cai no default em vez de gerar erro.
+#'
+#' @param nome Nome da paleta, um dos valores de `.PALETAS_RASTER`.
+#' @param n Numero de classes.
+#'
+#' @return Vetor de `n` cores.
+#' @noRd
+.cores_paleta <- function(nome, n = 25) {
+  switch(
+    nome,
+    "topo.colors" = rev(topo.colors(n)),
+    "heat.colors" = rev(heat.colors(n)),
+    "cm.colors"   = rev(cm.colors(n)),
+    "rainbow"     = rev(rainbow(n)),
+    "nice.colors" = colorRampPalette(
+      c("deepskyblue", "green", "yellow", "red")
+    )(n),
+    rev(terrain.colors(n))
+  )
+}
 
 #' Cores oferecidas para contorno e preenchimento de vetor
 #'
@@ -31,15 +46,13 @@
 
 #' Monta a funcao de cores de um raster
 #'
-#' @param nome Nome da paleta, uma das chaves de `.PALETAS_RASTER`.
+#' @param nome Nome da paleta, um dos valores de `.PALETAS_RASTER`.
 #' @param dominio Vetor numerico com a faixa de valores do raster.
 #'
 #' @return Uma funcao de paleta do leaflet.
 #' @noRd
 .paleta_raster <- function(nome, dominio) {
-  fun <- .PALETAS_RASTER[[nome]]
-  if (is.null(fun)) fun <- .PALETAS_RASTER[["terrain.colors"]]
-  colorNumeric(fun(25), domain = dominio, na.color = "transparent")
+  colorNumeric(.cores_paleta(nome), domain = dominio, na.color = "transparent")
 }
 
 #' Texto do popup dos pontos

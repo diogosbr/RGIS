@@ -3,6 +3,7 @@
 ^ROADMAP\.md$
 ^app\.R$
 ^rsconnect$
+^data-raw$
 ^\.git.*$
 ^\.gitattributes$
 ^LICENSE\.md$

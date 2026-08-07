@@ -84,9 +84,10 @@ A ordem importa: a fase 1 destrava todo o resto.
 
 - [ ] **13. Validação com mensagem específica**, do tipo "a coluna 'lon' não existe; encontradas:
       sp, longitude, latitude", no lugar de "Something went wrong".
-- [ ] **14. Dados de exemplo** em `inst/extdata` com botão "carregar exemplo". Os exemplos
-      antigos foram removidos do repositório; as regras e a lista do que falta estão em
-      `inst/extdata/README.md`.
+- [ ] **14. Dados de exemplo** em `inst/extdata` com botão "carregar exemplo". Os arquivos já
+      estão lá (1 MB, cobrindo ponto, raster contínuo, raster projetado, polígono e linha),
+      documentados em `inst/extdata/README.md`. Falta o botão na interface e um raster
+      categórico de verdade, com níveis declarados.
 - [ ] **15. Aba Ajuda de verdade**: formatos aceitos, exigências de CRS, limites de tamanho e um
       passo a passo.
 - [ ] **16. Indicador de progresso** ao carregar arquivo grande, para não parecer travamento.
@@ -131,6 +132,8 @@ Em ordem de valor por esforço.
 - A pasta `Exemplos/` foi removida por inteiro. Os arquivos grandes seguem no histórico do git
   (custo de ~10 MB no clone) e só sairiam de vez com reescrita de histórico, o que não vale a
   pena. Os novos exemplos vão para `inst/extdata/`, sob as regras descritas lá.
-- Falta rodar `devtools::document()` para gerar `man/`. O `NAMESPACE` foi escrito à mão para o
-  pacote poder ser instalado antes disso; ele já traz o cabeçalho do roxygen2, então
-  `document()` o regenera sem reclamar.
+- `R CMD check` passa com 0 erros, 0 avisos e 0 notas. O `man/` é gerado por
+  `devtools::document()` e está versionado.
+- Os dados originais dos exemplos vivem em `data-raw/`, fora do versionamento. Se você clonar o
+  repositório em outra máquina, os derivados de `inst/extdata/` vêm junto e nada quebra; só a
+  regeneração a partir do original é que exige copiar os arquivos grandes de novo.

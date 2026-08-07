@@ -105,7 +105,7 @@
     selectInput(
       "col_raster",
       "Cores",
-      choices = names(.PALETAS_RASTER),
+      choices = .PALETAS_RASTER,
       width = "70%"
     ),
     sliderInput(

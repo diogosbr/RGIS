@@ -4,7 +4,7 @@ header <- dashboardHeader(title = "RGIS")
 #corpo ----
 body <- dashboardBody(
   fluidRow(
-    useShinyalert(),
+    # useShinyalert() era exigido pelo shinyalert < 3.0 e hoje e deprecado
     #barra lateral (abas) ----
     column(width = 3,
            #config. abas ----
@@ -78,10 +78,12 @@ body <- dashboardBody(
                  "file2",
                  "Selecionar arquivo",
                  multiple = FALSE,
+                 # .asc e .bil sairam da lista: nunca trazem CRS (ou dependem de
+                 # arquivo companheiro), entao sempre caem em erro. Voltam quando
+                 # existir escolha manual de EPSG (fase 2, item 7).
                  accept = c("image/tiff",
-                            ".tiff",
-                            ".asc",
-                            ".bil"),
+                            ".tif",
+                            ".tiff"),
                  buttonLabel = "Arquivo",
                  placeholder = "Insira o raster"
                ),
@@ -130,7 +132,7 @@ body <- dashboardBody(
                #inserir arquivo ----
                textInput("shape_path",
                          "Caminho do arquivo",
-                         "./Exemplos/biomas.shp"
+                         "./Exemplos/BIOMAS.shp"
                ),
                actionButton("shape_path_button", "Escolha o shape",
                             width = "100%",
@@ -219,15 +221,16 @@ body <- dashboardBody(
                             "Raster",
                             multiple = FALSE,
                             accept = c("image/tiff",
-                                       ".tiff",
-                                       ".asc",
-                                       ".bil"),
+                                       ".tif",
+                                       ".tiff"),
                             buttonLabel = "Arquivo",
                             placeholder = "Insira o raster"
                           ),
 
                           #Inserir shape ----
-                          textInput("shape_path", "Shape", "./Exemplos/biomas.shp")
+                          # ID renomeado: era "shape_path", duplicando o input da aba
+                          # Vetor, e Shiny ignorava o segundo em silencio
+                          textInput("add_shape_path", "Shape", "./Exemplos/BIOMAS.shp")
                       ),
 
                       #Botao OK ----

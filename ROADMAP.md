@@ -30,8 +30,10 @@ Cinco problemas travam o produto:
 4. **Carregamento quebrado por design.** `file.choose()` no server abre o diálogo na máquina do
    servidor: funciona local, quebra na web. A saída foi essa porque `fileInput` não lida com
    shapefile multi-arquivo.
-5. **Rasters grandes falham em silêncio.** `addRasterImage` tem `maxBytes` de 4 MB por padrão;
-   os exemplos de 24 MB simplesmente não aparecem.
+5. **Rasters grandes não abrem.** `addRasterImage` tem `maxBytes` de 4 MB por padrão e lança erro
+   acima disso, então os exemplos de 24 MB derrubavam a sessão com a tela vermelha do Shiny.
+   O limite é aplicado ao raster já reprojetado para Web Mercator, que pode ser maior que o
+   original, portanto elevar o teto é paliativo: a solução é agregar antes de exibir.
 
 Bugs menores: ID `shape_path` duplicado no `ui.R`; `popup = ~shape[[input$label]]` usa índice
 numérico cru; `topo.colors` chama `rev((25))` em vez de `rev(topo.colors(25))`;
@@ -44,7 +46,8 @@ A ordem importa: a fase 1 destrava todo o resto.
 
 ### Fase 1, fundação
 
-- [ ] **1. Migrar para `sf` + `terra`**, removendo `rgdal`, `raster` e `sp`. Sem isso o app não roda.
+- [x] **1. Migrar para `sf` + `terra`**, removendo `rgdal`, `raster` e `sp`. Sem isso o app não roda.
+      Feito no branch `dev`. Ainda não validado em execução: falta rodar localmente.
 - [ ] **2. Reestruturar como pacote R**: `R/`, `DESCRIPTION`, `inst/app/`, função `run_app()`.
       Habilita uso local e deploy web com o mesmo código.
 - [ ] **3. Núcleo de camadas**: um `reactiveVal` com lista de camadas (id, nome, tipo, dado,
@@ -121,3 +124,7 @@ Em ordem de valor por esforço.
   único antes do v1.0.
 - Rasters grandes (`.tif` de 24 MB e 4,9 MB) ficaram fora do versionamento via `.gitignore`.
   Os exemplos que ficarem no repo devem ser pequenos e ir para `inst/extdata`.
+- **`Exemplos/BIOMAS.shp` não tem `.prj`**, ou seja, não declara CRS. O bounding box
+  (-73,99 / -33,75 / -32,38 / 5,27) confirma graus decimais, então o app assume EPSG:4326 e avisa.
+  Se a origem do dado for conhecida (SIRGAS 2000 e SAD69 são candidatos prováveis para dados
+  brasileiros), vale gerar o `.prj` correto em vez de depender da suposição.

@@ -10,8 +10,7 @@
 #' @import shiny
 #' @import leaflet
 #' @importFrom shinydashboard dashboardPage dashboardHeader dashboardSidebar dashboardBody box
-#' @importFrom shinyBS bsTooltip
 #' @importFrom shinyalert shinyalert
-#' @importFrom leaflet.extras addDrawToolbar addStyleEditor drawShapeOptions editToolbarOptions selectedPathOptions
+#' @importFrom leaflet.extras addDrawToolbar drawShapeOptions editToolbarOptions selectedPathOptions
 #' @importFrom grDevices terrain.colors topo.colors heat.colors cm.colors rainbow colorRampPalette
 "_PACKAGE"

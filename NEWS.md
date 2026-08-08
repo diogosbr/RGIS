@@ -1,3 +1,33 @@
+# RGIS 0.4.0
+
+As camadas finalmente coexistem. É a correção do defeito central herdado de 2021.
+
+- **Pilha de camadas.** O estado do app passa a ser uma lista ordenada de camadas
+  (id, nome, tipo, dado, estilo, visibilidade). O mapa é renderizado uma única vez
+  e todo o resto acontece por `leafletProxy`. Antes, cada botão chamava
+  `renderLeaflet` de novo e reconstruía o mapa inteiro, então plotar um raster
+  apagava os pontos.
+- **Sincronização incremental.** A cada mudança, o app compara as assinaturas do
+  que está desenhado com a pilha atual e faz o mínimo: mudança de estilo redesenha
+  só a camada afetada e as que estão acima dela; camada nova é desenhada sozinha
+  por cima; só remoção e reordenação forçam redesenho completo.
+- **Entrada única de arquivos.** Um seletor só, que aceita vários arquivos de uma
+  vez e descobre o tipo pela extensão: CSV, GeoTIFF, shapefile multi-arquivo,
+  `.zip`, GeoPackage, GeoJSON e KML. Os uploads são materializados em pasta
+  temporária com os nomes originais, o que é o que faz shapefile funcionar. O
+  `file.choose()`, que só funcionava com o R na mesma máquina do navegador, saiu.
+- **Painel de camadas** com mostrar/esconder, subir, descer, enquadrar no mapa,
+  renomear e remover.
+- **Estilo por camada**, com controles específicos do tipo, e legenda por camada
+  que aparece e some junto com ela.
+- **Autodetecção das colunas de coordenada** no CSV, cobrindo as convenções do
+  GBIF e do speciesLink. Os campos de nome viram opcionais.
+- **Raster grande é reamostrado** na leitura, e não a cada desenho. Rasters de
+  modelagem deixam de estourar o limite do leaflet.
+- **Botão de carregar os dados de exemplo** que acompanham o pacote.
+- Abas por tipo de dado removidas: com uma pilha de camadas elas perdem sentido.
+- Dependência `shinyBS` removida, junto com os tooltips que ela servia.
+
 # RGIS 0.3.0
 
 Reestruturação em pacote R.

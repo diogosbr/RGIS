@@ -1,6 +1,6 @@
 Package: RGIS
 Title: Visualizador de Camadas Geoespaciais
-Version: 0.3.0
+Version: 0.4.0
 Authors@R:
     person("Diogo", "Rocha", email = "d.rocha@iis-rio.org",
            role = c("aut", "cre"))
@@ -21,7 +21,6 @@ Imports:
     leaflet.extras (>= 1.0.0),
     sf (>= 1.0.0),
     shiny (>= 1.7.0),
-    shinyBS (>= 0.61),
     shinyalert (>= 3.0.0),
     shinydashboard (>= 0.7.0),
     terra (>= 1.6.17),

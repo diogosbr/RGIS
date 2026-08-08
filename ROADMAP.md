@@ -46,57 +46,58 @@ A ordem importa: a fase 1 destrava todo o resto.
 
 ### Fase 1, fundação
 
-- [x] **1. Migrar para `sf` + `terra`**, removendo `rgdal`, `raster` e `sp`. Sem isso o app não roda.
-      Feito no branch `dev`. Ainda não validado em execução: falta rodar localmente.
+- [x] **1. Migrar para `sf` + `terra`**, removendo `rgdal`, `raster` e `sp`.
 - [x] **2. Reestruturar como pacote R**: `R/`, `DESCRIPTION`, `NAMESPACE`, função `run_app()` e
-      `app.R` na raiz para as plataformas de deploy. Feito no branch `dev`. Falta rodar
-      `devtools::document()` e `devtools::check()`, que exigem R.
-- [ ] **3. Núcleo de camadas**: um `reactiveVal` com lista de camadas (id, nome, tipo, dado,
+      `app.R` na raiz para as plataformas de deploy.
+- [x] **3. Núcleo de camadas**: um `reactiveVal` com lista de camadas (id, nome, tipo, dado,
       estilo, visível, ordem) e `leafletProxy` para adicionar/remover sem redesenhar o mapa.
       Elimina a aba ADD inteira e resolve o problema 2.
-- [ ] **4. Modularizar em módulos Shiny** (`mod_upload`, `mod_layers`, `mod_style`, `mod_map`)
-      para não virar um `server.R` de mil linhas.
+- [x] **4. Separar por responsabilidade** para não virar um `server.R` de mil linhas:
+      `camadas.R` (a pilha), `upload.R` (ingestão), `ler.R` (leitura), `estilo.R`, `mapa.R`
+      (desenho e sincronização), `app_ui.R` e `app_server.R`. Não são módulos Shiny com
+      namespace: uma tela só, sem componente repetido, não justifica o custo.
 - [x] **5a.** `install.packages()` automático removido: as dependências agora vivem no
       `DESCRIPTION`, com versão mínima.
 - [ ] **5b. `renv`** para travar as versões exatas usadas em desenvolvimento e no deploy.
 
 ### Fase 2, ingestão que não quebra
 
-- [ ] **6. Ponto de entrada único de arquivo**, com detecção de tipo por extensão: csv, tif/asc,
+- [x] **6. Ponto de entrada único de arquivo**, com detecção de tipo por extensão: csv, tif/asc,
       shp (multi-arquivo ou `.zip`), gpkg, geojson. Copiar para tempdir preservando os nomes
       originais. Elimina o `file.choose()`.
-- [ ] **7. Detecção e reprojeção de CRS**: avisar quando ausente, permitir escolher o EPSG,
-      reprojetar tudo para EPSG:4326 na exibição.
-- [ ] **8. Autodetecção das colunas de coordenada** no CSV (lon, long, longitude, x,
+- [x] **7a.** Reprojeção automática para EPSG:4326 e aviso na tela quando a camada não declara
+      CRS, caso em que WGS84 é assumido.
+- [ ] **7b.** Deixar o usuário informar o EPSG de uma camada sem CRS, em vez de só assumir.
+- [x] **8. Autodetecção das colunas de coordenada** no CSV (lon, long, longitude, x,
       decimalLongitude e equivalentes de latitude), com override manual.
 
 ### Fase 3, painel de camadas
 
-- [ ] **9. Lista de camadas** com mostrar/ocultar, reordenar, renomear, zoom na camada e remover.
-- [ ] **10. Estilo por camada** e não global: raster (paleta, opacidade, faixa de valores);
+- [x] **9. Lista de camadas** com mostrar/ocultar, reordenar, renomear, zoom na camada e remover.
+- [x] **10. Estilo por camada** e não global: raster (paleta, opacidade, faixa de valores);
       vetor (contorno, preenchimento, espessura, opacidade); pontos (cor, tamanho, coluna de
       popup via `selectInput` populado por `names()`, no lugar do índice numérico).
-- [ ] **11. Legenda por camada**, que aparece e desaparece junto com ela.
-- [ ] **12. Raster grande**: agregação automática antes de exibir e `maxBytes` ajustado.
-      Tratar categórico e contínuo de formas diferentes.
+- [x] **11. Legenda por camada**, que aparece e desaparece junto com ela.
+- [x] **12a.** Raster grande é agregado na leitura, e não a cada desenho, com `maxBytes` como
+      rede de segurança.
+- [ ] **12b.** Tratar raster categórico com legenda de classes. Hoje ele é recusado com mensagem.
 
 ### Fase 4, acabamento para iniciante
 
-- [ ] **13. Validação com mensagem específica**, do tipo "a coluna 'lon' não existe; encontradas:
+- [x] **13. Validação com mensagem específica**, do tipo "a coluna 'lon' não existe; encontradas:
       sp, longitude, latitude", no lugar de "Something went wrong".
-- [ ] **14. Dados de exemplo** em `inst/extdata` com botão "carregar exemplo". Os arquivos já
-      estão lá (1 MB, cobrindo ponto, raster contínuo, raster projetado, polígono e linha),
-      documentados em `inst/extdata/README.md`. Falta o botão na interface e um raster
-      categórico de verdade, com níveis declarados.
-- [ ] **15. Aba Ajuda de verdade**: formatos aceitos, exigências de CRS, limites de tamanho e um
+- [x] **14. Dados de exemplo** em `inst/extdata` com botão "carregar exemplo". 1 MB cobrindo
+      ponto, raster contínuo, raster projetado, polígono e linha, documentados em
+      `inst/extdata/README.md`. Falta só um raster categórico de verdade, para o item 12b.
+- [x] **15. Aba Ajuda de verdade**: formatos aceitos, exigências de CRS, limites de tamanho e um
       passo a passo.
-- [ ] **16. Indicador de progresso** ao carregar arquivo grande, para não parecer travamento.
-- [ ] **17. Interface toda em PT-BR.**
+- [x] **16. Indicador de progresso** ao carregar arquivo grande, para não parecer travamento.
+- [x] **17. Interface toda em PT-BR.**
 - [ ] **18. Exportar o mapa em PNG** (`webshot2` / `mapshot`). Sem isso o app não entrega nada
       para fora.
 - [ ] **19. README com screenshot**, testes `testthat` das funções não reativas (leitura,
       reprojeção, estilo) e deploy verificado nos dois modos.
-- [ ] **20. Limpeza**: remover a aba FUN, corrigir o ID `shape_path` duplicado e o bug do
+- [x] **20. Limpeza**: remover a aba FUN, corrigir o ID `shape_path` duplicado e o bug do
       `topo.colors`.
 
 ## Lista de desejos (v1.x+)
